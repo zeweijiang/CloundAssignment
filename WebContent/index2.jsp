@@ -247,19 +247,6 @@ Key Words<br>
 <input id="stopSubmit" type="button" onclick="stopSubmitFunction()" value="stop updating"/>
 </form>
 <script type="text/javascript">document.getElementById("stopSubmit").disabled=true;</script>
-
-Current Searching<form action="MyServlet" method="get">
-<select id="keys" name="keys">
-	<% 
-		for(int i=0;i<keyList.size();i++){
-	%>
-	<option value="<%=keyList.get(i)%>"><%=keyList.get(i)%></option>
-	<% 
-		}
-	%>
-</select>
-<input type="submit" name="stop" value="stop">
-</form>
 Filter Selection<form action="MyServlet" method="get">
 <select id="filter" name="filter">
 	<% 
