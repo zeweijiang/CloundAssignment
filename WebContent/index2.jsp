@@ -24,14 +24,14 @@
 	<title>Home</title>
 </head>
 <body onload="GetMap()">
-<div>
+<!--  <div>
     <input type="text" id="messageinput"/>
 </div>
 <div>
     <button type="button" onclick="openSocket();" >Open</button>
     <button type="button" onclick="send();" >Send</button>
     <button type="button" onclick="closeSocket();" >Close</button>
-</div>
+</div> -->
 <!-- Server responses get written here -->
 <div id="messages"></div>
 
@@ -42,64 +42,7 @@
     var messages = document.getElementById("messages");
     var currentState=0;
     var stop=<%=new String("stop").hashCode()%>;
-   
-   
-    function openSocket(){
-        // Ensures only one connection is open at a time
-        if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
-           writeResponse("WebSocket is already opened.");
-            return;
-        }
-        // Create a new instance of the websocket
-        webSocket = new WebSocket("ws://localhost:8080/CloudTwitterMap/echo");
-        /**
-         * Binds functions to the listeners for the websocket.
-         */
-        webSocket.onopen = function(event){
-            // For reasons I can't determine, onopen gets called twice
-            // and the first time event.data is undefined.
-            // Leave a comment if you know the answer.
-            if(event.data === undefined)
-                return;
-
-            writeResponse(event.data);
-        };
-
-        webSocket.onmessage = function(event){
-            writeResponse(event.data);
-        };
-
-        webSocket.onclose = function(event){
-            writeResponse("Connection closed");
-        };
-    }
-   
-    /**
-     * Sends the value of the text input to the server
-     */
-    function send(){
-        var text = document.getElementById("messageinput").value;
-        webSocket.send(text);
-    }
-   
-    function closeSocket(){
-        webSocket.close();
-    }
-
-    function writeResponse(text){
-        messages.innerHTML += "<br/>" + text;
-    }
-   
-	function buttonSubmitFunction(){
-		var text = document.getElementById("wordtobesearch").value;
-		webSocket.send(text);
-	}
-	
-	function stopSubmitFunction(){
-		webSocket.send("stop");
-	}
-</script>
-<script type="text/javascript">
+    var readpoint=[];
 	var map2;
 	var map;
 	var heatmap;
@@ -161,6 +104,83 @@
 		var container = document.getElementById("mapContainer2");
 		map2 = new google.maps.Map(container,myOptions);
 	}
+	
+	
+	   function openSocket(){
+	        // Ensures only one connection is open at a time
+	        if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
+	           writeResponse("WebSocket is already opened.");
+	            return;
+	        }
+	        // Create a new instance of the websocket
+	        webSocket = new WebSocket("ws://localhost:8080/CloudTwitterMap/echo");
+	        /**
+	         * Binds functions to the listeners for the websocket.
+	         */
+	        webSocket.onopen = function(event){
+	            // For reasons I can't determine, onopen gets called twice
+	            // and the first time event.data is undefined.
+	            // Leave a comment if you know the answer.
+	            if(event.data === undefined)
+	                return;
+
+	            writeResponse(event.data);
+	        };
+
+	        webSocket.onmessage = function(event){
+	            //writeResponse(event.data);
+	            if(currentState=0){
+	            	currentState=1;
+	            	readpoint[0]=event.data;
+	            }else if(currentState==1){
+	            	currentState=2;
+	            	readpoint[1]=event.data;
+	            }else if(currentState=2){
+	            	currentState=3;
+	            	readpoint[2]=event.data;
+	            }else if(currentState=3){
+	            	currentState=0;
+	            	readpoint[3]=event.data;
+	            	
+	            }
+	        };
+
+	        webSocket.onclose = function(event){
+	            writeResponse("Connection closed");
+	        };
+	    }
+	   
+	    /**
+	     * Sends the value of the text input to the server
+	     */
+	    function send(){
+	        var text = document.getElementById("messageinput").value;
+	        webSocket.send(text);
+	    }
+	   
+	    function closeSocket(){
+	        webSocket.close();
+	    }
+
+	    function writeResponse(text){
+	        messages.innerHTML += "<br/>" + text;
+	    }
+	   
+		function buttonSubmitFunction(){
+			var text = document.getElementById("wordtobesearch").value;
+			if (text!=""){
+				webSocket.send(text);
+				document.getElementById("buttonSubmit").disabled=true;
+				document.getElementById("stopSubmit").disabled=false;
+			}
+		}
+		
+		function stopSubmitFunction(){
+			webSocket.send("stop");
+			document.getElementById("buttonSubmit").disabled=false;
+			document.getElementById("stopSubmit").disabled=true;
+		}
+	
 </script>
 <% 
 	ArrayList<String> keyList=(ArrayList<String>)request.getAttribute("keys");
@@ -177,6 +197,7 @@ Key Words<br>
 <input id="buttonSubmit" type="button" onclick="buttonSubmitFunction()" value="search for key word!"/>
 <input id="stopSubmit" type="button" onclick="stopSubmitFunction()" value="stop updating"/>
 </form>
+<script type="text/javascript">document.getElementById("stopSubmit").disabled=true;</script>
 <form>
 Number Limit(can only affect current searching)<br>
 <input type="text" name="limit" value=<%=limit%>>
