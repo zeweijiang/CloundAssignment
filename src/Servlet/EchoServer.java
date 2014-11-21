@@ -28,12 +28,8 @@ public class EchoServer {
     @OnOpen
     public void onOpen(Session session){
         System.out.println(session.getId() + " has opened a connection"); 
-        try {
-            session.getBasicRemote().sendText("Connection Established");
-            s=session;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        //session.getBasicRemote().sendText("Connection Established");
+		s=session;
     }
     class Reply extends Thread{
     	String key;

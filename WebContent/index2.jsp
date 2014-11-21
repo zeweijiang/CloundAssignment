@@ -129,18 +129,44 @@
 
 	        webSocket.onmessage = function(event){
 	            //writeResponse(event.data);
-	            if(currentState=0){
+	            if(currentState==0){
 	            	currentState=1;
 	            	readpoint[0]=event.data;
 	            }else if(currentState==1){
 	            	currentState=2;
 	            	readpoint[1]=event.data;
-	            }else if(currentState=2){
+	            }else if(currentState==2){
 	            	currentState=3;
 	            	readpoint[2]=event.data;
-	            }else if(currentState=3){
+	            }else if(currentState==3){
 	            	currentState=0;
 	            	readpoint[3]=event.data;
+	            	
+	            	var len=taxiData.length;
+	            	taxiData[len]=new google.maps.LatLng(readpoint[1],readpoint[2]);
+	            	marker[len] = new google.maps.Marker({
+						map: map,
+						position: taxiData[len]});
+	           
+	            	
+	            	infowindow[len] = new google.maps.InfoWindow();
+					  infowindow[len].setContent(readpoint[3]+' : '+readpoint[0]);
+					  google.maps.event.addListener(marker[len], 'click', function() {
+						  infowindow[len].open(map, marker[len]);
+					  });
+	            	
+	            	
+	            	
+	            	var pointArray = new google.maps.MVCArray(taxiData);
+	        		heatmap = new google.maps.visualization.HeatmapLayer({
+	        		    data: pointArray
+	        		  });
+	        		var mcOptions = {gridSize: 50, maxZoom: 15};
+	        		//mc = new MarkerClusterer(map);
+	        		var mc = new MarkerClusterer(map,marker,mcOptions);
+	        		heatmap.setMap(map2);	
+	            	
+	            	
 	            	
 	            }
 	        };
@@ -167,6 +193,7 @@
 	    }
 	   
 		function buttonSubmitFunction(){
+			infowindow=[];taxiData=[];marker=[];
 			var text = document.getElementById("wordtobesearch").value;
 			if (text!=""){
 				webSocket.send(text);
@@ -177,6 +204,7 @@
 		
 		function stopSubmitFunction(){
 			webSocket.send("stop");
+			infowindow=[];taxiData=[];marker=[];
 			document.getElementById("buttonSubmit").disabled=false;
 			document.getElementById("stopSubmit").disabled=true;
 		}
