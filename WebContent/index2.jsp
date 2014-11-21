@@ -96,7 +96,7 @@
 	}
 	
 	function stopSubmitFunction(){
-		webSocket.send(stop);
+		webSocket.send("stop");
 	}
 </script>
 <script type="text/javascript">
