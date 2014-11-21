@@ -49,7 +49,7 @@
             return;
         }
         // Create a new instance of the websocket
-        webSocket = new WebSocket("ws://localhost:8080/com/twittermap/rome/echo");
+        webSocket = new WebSocket("ws://localhost:8080/CloudTwitterMap/echo");
         /**
          * Binds functions to the listeners for the websocket.
          */
@@ -88,6 +88,11 @@
         messages.innerHTML += "<br/>" + text;
     }
    
+	function buttonSubmitFunction(){
+		var text = document.getElementById("wordtobesearch").value;
+		openSocket();
+		webSocket.send(text);
+	}
 </script>
 <script type="text/javascript">
 	var map2;
@@ -162,8 +167,8 @@
 <td>
 <form action="MyServlet" method="get">
 Key Words<br>
-<input type="text" name="inputKey">
-<input type="submit" name="start" value="search for key word!">
+<input id="wordtobesearch" type="text" >
+<input id="buttonSubmit" type="button"onclick="buttonSubmitFunction()" value="search for key word!"/>
 </form>
 <form>
 Number Limit(can only affect current searching)<br>
