@@ -75,7 +75,7 @@ public class EchoServer {
      */
     @OnMessage
     public void onMessage(String message, Session session){
-    	if(!message.equals(new String("stop").hashCode())){
+    	if(!message.equals("stop")){
     	startTransmit=true;
     	System.out.println(message);
     	Reply r = new Reply(message);

@@ -40,6 +40,8 @@
                
     var webSocket;
     var messages = document.getElementById("messages");
+    var currentState=0;
+    var stop=<%=new String("stop").hashCode()%>;
    
    
     function openSocket(){
@@ -90,8 +92,11 @@
    
 	function buttonSubmitFunction(){
 		var text = document.getElementById("wordtobesearch").value;
-		openSocket();
 		webSocket.send(text);
+	}
+	
+	function stopSubmitFunction(){
+		webSocket.send("stop");
 	}
 </script>
 <script type="text/javascript">
@@ -134,6 +139,7 @@
 		mainMap();
 		heatMap();
 		initialPoints();
+		openSocket();
 	}
 	function mainMap(){
 		var latlng= new google.maps.LatLng(0,0);
@@ -169,6 +175,7 @@
 Key Words<br>
 <input id="wordtobesearch" type="text" >
 <input id="buttonSubmit" type="button" onclick="buttonSubmitFunction()" value="search for key word!"/>
+<input id="stopSubmit" type="button" onclick="stopSubmitFunction()" value="stop updating"/>
 </form>
 <form>
 Number Limit(can only affect current searching)<br>
