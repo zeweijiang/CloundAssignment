@@ -142,28 +142,28 @@
 	            	currentState=0;
 	            	readpoint[3]=event.data;
 	            	
-	            	var len=taxiData.length;
-	            	taxiData[len]=new google.maps.LatLng(readpoint[1],readpoint[2]);
-	            	marker[len] = new google.maps.Marker({
+	            	
+	            	var tmpa=new google.maps.LatLng(readpoint[1],readpoint[2]);
+	            	var tmpb = new google.maps.Marker({
 						map: map,
-						position: taxiData[len]});
+						position: tmpa});
 	           
 	            	
-	            	infowindow[len] = new google.maps.InfoWindow();
-					  infowindow[len].setContent(readpoint[3]+' : '+readpoint[0]);
-					  google.maps.event.addListener(marker[len], 'click', function() {
-						  infowindow[len].open(map, marker[len]);
+	            	var tmpc = new google.maps.InfoWindow();
+	            	tmpc.setContent(readpoint[3]+' : '+readpoint[0]);
+					  google.maps.event.addListener(tmpb, 'click', function() {
+						  tmpc.open(map, tmpb);
 					  });
 	            	
 	            	
 	            	
-	            	var pointArray = new google.maps.MVCArray(taxiData);
+	            	var pointArray = new google.maps.MVCArray(tmpa);
 	        		heatmap = new google.maps.visualization.HeatmapLayer({
 	        		    data: pointArray
 	        		  });
-	        		var mcOptions = {gridSize: 50, maxZoom: 15};
+	        		//var mcOptions = {gridSize: 50, maxZoom: 15};
 	        		//mc = new MarkerClusterer(map);
-	        		var mc = new MarkerClusterer(map,marker,mcOptions);
+	        		//mc.add
 	        		heatmap.setMap(map2);	
 	            	
 	            	
@@ -193,8 +193,22 @@
 	    }
 	   
 		function buttonSubmitFunction(){
-			infowindow=[];taxiData=[];marker=[];
+			
+			
+			
+			
+			infowindow=[];taxiData=[];
+			var i=0;
+			for(;i<marker.length;i++){
+    			marker[i].setMap(null);
+    		}
+			marker=[];
+			mainMap();
+			heatMap();
 			var text = document.getElementById("wordtobesearch").value;
+			var option = document.createElement("option");
+			option.text = text;
+			document.getElementById("filter").add(option);
 			if (text!=""){
 				webSocket.send(text);
 				document.getElementById("buttonSubmit").disabled=true;
@@ -226,11 +240,7 @@ Key Words<br>
 <input id="stopSubmit" type="button" onclick="stopSubmitFunction()" value="stop updating"/>
 </form>
 <script type="text/javascript">document.getElementById("stopSubmit").disabled=true;</script>
-<form>
-Number Limit(can only affect current searching)<br>
-<input type="text" name="limit" value=<%=limit%>>
-<input type="submit" value="OK">
-</form>
+
 Current Searching<form action="MyServlet" method="get">
 <select id="keys" name="keys">
 	<% 
