@@ -56,7 +56,7 @@ public class UserApplication {
 	}
 	public String[] getCurrent(){
 		if(currentText!=null){
-			String[] tmps= new String[3];
+			String[] tmps= new String[4];
 			tmps[0]= currentText;
 			tmps[1]=currentLatitude;
 			tmps[2]=currentLongitude;
@@ -99,10 +99,14 @@ public class UserApplication {
 			public void onStatus(Status arg0) {
 				// TODO Auto-generated method stub
 				if(arg0.getGeoLocation()!=null){
-					System.out.println(currentText=arg0.getText());
-					System.out.println(currentLatitude=String.valueOf(arg0.getGeoLocation().getLatitude()));
-					System.out.println(currentLongitude=String.valueOf(arg0.getGeoLocation().getLatitude()));
-					System.out.println(currentTimeStamp=arg0.getCreatedAt().toString());
+					//System.out.println(currentText=arg0.getText());
+					//System.out.println(currentLatitude=String.valueOf(arg0.getGeoLocation().getLatitude()));
+					//System.out.println(currentLongitude=String.valueOf(arg0.getGeoLocation().getLatitude()));
+					//System.out.println(currentTimeStamp=arg0.getCreatedAt().toString());
+					currentText=arg0.getText();
+					currentLatitude=String.valueOf(arg0.getGeoLocation().getLatitude());
+					currentLongitude=String.valueOf(arg0.getGeoLocation().getLatitude());
+					currentTimeStamp=arg0.getCreatedAt().toString();
 					ArrayList<String> keys = getKey(stream, arg0.getText());
 					for(String key:keys){
 						database.fetchPosition(arg0.getId(),key, arg0.getText(),arg0.getGeoLocation().getLatitude(),arg0.getGeoLocation().getLongitude(),arg0.getCreatedAt().toString());	

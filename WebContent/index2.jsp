@@ -168,7 +168,7 @@
 <form action="MyServlet" method="get">
 Key Words<br>
 <input id="wordtobesearch" type="text" >
-<input id="buttonSubmit" type="button"onclick="buttonSubmitFunction()" value="search for key word!"/>
+<input id="buttonSubmit" type="button" onclick="buttonSubmitFunction()" value="search for key word!"/>
 </form>
 <form>
 Number Limit(can only affect current searching)<br>

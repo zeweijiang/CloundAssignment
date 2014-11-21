@@ -43,10 +43,13 @@ public class EchoServer {
     	public void run(){
     		MyServlet.ua.startStream(key);
     		while(startTransmit){
-    			String[] tmp= new String[3];
+    			String[] tmp= new String[4];
     			tmp=MyServlet.ua.getCurrent();
+    			//System.out.println("!!!!");
     			if(tmp!=null){
+    				System.out.println("dsds");
     				try {
+    					System.out.println(tmp[0]);
 						s.getBasicRemote().sendText(tmp[0]);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -68,6 +71,7 @@ public class EchoServer {
      */
     @OnMessage
     public void onMessage(String message, Session session){
+    	startTransmit=true;
     	System.out.println(message);
     	Reply r = new Reply(message);
     	r.start();

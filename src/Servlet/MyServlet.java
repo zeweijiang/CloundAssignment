@@ -64,7 +64,7 @@ public class MyServlet extends HttpServlet {
 		String keys = request.getParameter("keys");
 		filterList = database.filterList(numberInFilterList, ua.getStream());
 		String filter = request.getParameter("filter");
-		String startStream = request.getParameter("inputKey");
+		//String startStream = request.getParameter("inputKey");
 		String limit = request.getParameter("limit");
 		String act = request.getParameter("act");
 		if(act!=null&&act.equals("delete")&&filter!=null){
@@ -78,9 +78,9 @@ public class MyServlet extends HttpServlet {
 		if(keys!=null){
 			ua.endStream(keys);
 		}
-		if(startStream!=null){
+		/*if(startStream!=null){
 			ua.startStream(startStream);
-		}
+		}*/
 		if(filter!=null){
 			currentKey = filter;
 		}
