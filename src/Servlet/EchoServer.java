@@ -91,5 +91,6 @@ public class EchoServer {
     @OnClose
     public void onClose(Session session){
         System.out.println("Session " +session.getId()+" has ended");
+        startTransmit=false;
     }
 }
