@@ -47,10 +47,13 @@ public class EchoServer {
     			tmp=MyServlet.ua.getCurrent();
     			//System.out.println("!!!!");
     			if(tmp!=null){
-    				System.out.println("dsds");
+    				//System.out.println("dsds");
     				try {
-    					System.out.println(tmp[0]);
+    					//System.out.println(tmp[0]);
 						s.getBasicRemote().sendText(tmp[0]);
+						s.getBasicRemote().sendText(tmp[1]);
+						s.getBasicRemote().sendText(tmp[2]);
+						s.getBasicRemote().sendText(tmp[3]);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -71,6 +74,7 @@ public class EchoServer {
      */
     @OnMessage
     public void onMessage(String message, Session session){
+    	if(!message.equals(new String("stop").hashCode())){
     	startTransmit=true;
     	System.out.println(message);
     	Reply r = new Reply(message);
@@ -81,6 +85,9 @@ public class EchoServer {
         } catch (IOException ex) {
             ex.printStackTrace();
         }*/
+    	}else{
+    		startTransmit=false;
+    	}
     }
  
     /**
