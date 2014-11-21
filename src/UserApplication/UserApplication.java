@@ -55,7 +55,7 @@ public class UserApplication {
         return true;
 	}
 	public String[] getCurrent(){
-		if(currentText!=null){
+		if(currentText!=null&&currentLatitude!=null&&currentLongitude!=null&&currentTimeStamp!=null){
 			String[] tmps= new String[4];
 			tmps[0]= currentText;
 			tmps[1]=currentLatitude;
@@ -105,7 +105,7 @@ public class UserApplication {
 					//System.out.println(currentTimeStamp=arg0.getCreatedAt().toString());
 					currentText=arg0.getText();
 					currentLatitude=String.valueOf(arg0.getGeoLocation().getLatitude());
-					currentLongitude=String.valueOf(arg0.getGeoLocation().getLatitude());
+					currentLongitude=String.valueOf(arg0.getGeoLocation().getLongitude());
 					currentTimeStamp=arg0.getCreatedAt().toString();
 					ArrayList<String> keys = getKey(stream, arg0.getText());
 					for(String key:keys){
