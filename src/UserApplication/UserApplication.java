@@ -14,6 +14,10 @@ public class UserApplication {
 	TwitterStream twitterStream;
 	HashSet<String> stream = new HashSet<String>();
 	ArrayList<String> keys = new ArrayList<String>();
+	String currentText=null;
+	String currentLatitude=null;
+	String currentLongitude=null;
+	String currentTimeStamp=null;
 	public ArrayList<String> getStream(){
 		return keys;
 	}
@@ -50,6 +54,22 @@ public class UserApplication {
 		resetListener();
         return true;
 	}
+	public String[] getCurrent(){
+		if(currentText!=null){
+			String[] tmps= new String[3];
+			tmps[0]= currentText;
+			tmps[1]=currentLatitude;
+			tmps[2]=currentLongitude;
+			tmps[3]=currentTimeStamp;
+			currentText=null;
+			currentLatitude=null;
+			currentLongitude=null;
+			currentTimeStamp=null;
+			return tmps;
+		}else{
+			return null;
+		}
+	}
 	public void resetListener(){
 		twitterStream.clearListeners();
 		twitterStream.cleanUp();
@@ -79,9 +99,10 @@ public class UserApplication {
 			public void onStatus(Status arg0) {
 				// TODO Auto-generated method stub
 				if(arg0.getGeoLocation()!=null){
-					System.out.println(arg0.getText());
-					System.out.println(arg0.getGeoLocation());
-					System.out.println(arg0.getCreatedAt());
+					System.out.println(currentText=arg0.getText());
+					System.out.println(currentLatitude=String.valueOf(arg0.getGeoLocation().getLatitude()));
+					System.out.println(currentLongitude=String.valueOf(arg0.getGeoLocation().getLatitude()));
+					System.out.println(currentTimeStamp=arg0.getCreatedAt().toString());
 					ArrayList<String> keys = getKey(stream, arg0.getText());
 					for(String key:keys){
 						database.fetchPosition(arg0.getId(),key, arg0.getText(),arg0.getGeoLocation().getLatitude(),arg0.getGeoLocation().getLongitude(),arg0.getCreatedAt().toString());	
