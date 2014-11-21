@@ -66,6 +66,7 @@ public class EchoServer {
 					e.printStackTrace();
 				}
     		}
+    		MyServlet.ua.endStream(key);
     	}
     }
     /**

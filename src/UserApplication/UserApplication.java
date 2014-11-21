@@ -24,10 +24,10 @@ public class UserApplication {
 	public UserApplication(DB database){
 		this.database=database;
 		configurationBuilder = new ConfigurationBuilder();
-        configurationBuilder.setOAuthConsumerKey("G2kMaZD9heWD17KB6xGAS3PbG")
-                .setOAuthConsumerSecret("GsURAVuUnDMc5wbCNpviTwDNnjhg4xa6RlE7wwLu1vuh5FO19M")
-                .setOAuthAccessToken("2841491153-eSVzpe4XQME5RiPwybFKq0aksHH7lM78iQrip1t")
-                .setOAuthAccessTokenSecret("01bSaYy596m65JwlSyArBX7n6Yp12V0YLzuFbDUV1vrF7");
+        configurationBuilder.setOAuthConsumerKey("O1y4263eAK53Y4btf7BEDBWO3")
+                .setOAuthConsumerSecret("gdZZygXcHWT72z6StAWnzOQEwKgibtBPgaI8P6uXiNku9VE8pR")
+                .setOAuthAccessToken("2846262060-mPn7PZbxlmNSmFc3Qtpm5uKRAVab6t7KUoIQeXZ")
+                .setOAuthAccessTokenSecret("fkQLghfGpf7oDZB8BfUAKV49RVzcT0eEdpBLUPR3ApSSM");
         twitterStream = new TwitterStreamFactory(configurationBuilder.build()).getInstance();
 	}
 	public boolean endStream(String key){
@@ -55,7 +55,7 @@ public class UserApplication {
         return true;
 	}
 	public String[] getCurrent(){
-		if(currentText!=null){
+		if(currentText!=null&&currentLatitude!=null&&currentLongitude!=null&&currentTimeStamp!=null){
 			String[] tmps= new String[4];
 			tmps[0]= currentText;
 			tmps[1]=currentLatitude;
@@ -105,7 +105,7 @@ public class UserApplication {
 					//System.out.println(currentTimeStamp=arg0.getCreatedAt().toString());
 					currentText=arg0.getText();
 					currentLatitude=String.valueOf(arg0.getGeoLocation().getLatitude());
-					currentLongitude=String.valueOf(arg0.getGeoLocation().getLatitude());
+					currentLongitude=String.valueOf(arg0.getGeoLocation().getLongitude());
 					currentTimeStamp=arg0.getCreatedAt().toString();
 					ArrayList<String> keys = getKey(stream, arg0.getText());
 					for(String key:keys){
