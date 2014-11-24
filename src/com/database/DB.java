@@ -98,4 +98,17 @@ public class DB
 	public void delete(String key){
 		query.delete(key);
 	}
+	//check if the current key exist in the database
+	public boolean checkFilterExist(String key){
+		if(query.filterList().contains(key)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	public HashMap<Long, TweetInfo> getTwitterList(String key){
+		HashMap<String,HashMap<Long, TweetInfo>> list=new HashMap<String,HashMap<Long,TweetInfo>>();
+		readPosition(list, key);
+		return list.get(key);
+	}
 }

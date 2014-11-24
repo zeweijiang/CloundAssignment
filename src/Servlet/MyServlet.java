@@ -20,13 +20,13 @@ import com.database.DB;
  */
 public class MyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    DB database = new DB();
+    static public DB database = new DB();
 	public static UserApplication ua;
 	HashMap<String,HashMap<Long, TweetInfo>> wholeList = new HashMap<String,HashMap<Long, TweetInfo>>();
 	ArrayList<String> filterList;
 	ArrayList<Integer> numberInFilterList = new ArrayList<Integer>();
 	String currentKey;
-	int currentLimit=200;
+	int currentLimit=2000;
     /**
      * @see HttpServlet#HttpServlet()
      */

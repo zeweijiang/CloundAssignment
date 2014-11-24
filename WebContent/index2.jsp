@@ -50,6 +50,7 @@
 	var taxiData=[];
 	var marker=[];
 	var infowindow=[];
+	var mc;
 	function initialPoints(){
 		<%
 		if(listAfterFilter.size()!=0){
@@ -69,13 +70,13 @@
 			}
 		}
 		%>
-		var pointArray = new google.maps.MVCArray(taxiData);
+		pointArray = new google.maps.MVCArray(taxiData);
 		heatmap = new google.maps.visualization.HeatmapLayer({
 		    data: pointArray
 		  });
 		var mcOptions = {gridSize: 50, maxZoom: 15};
 		//var mc = new MarkerClusterer(map);
-		var mc = new MarkerClusterer(map,marker,mcOptions);
+		mc = new MarkerClusterer(map,marker,mcOptions);
 		heatmap.setMap(map2);
 	}
 	function clearMarker() {
@@ -130,7 +131,6 @@
 	            // Leave a comment if you know the answer.
 	            if(event.data === undefined)
 	                return;
-
 	            writeResponse(event.data);
 	        };
 
@@ -154,24 +154,23 @@
 	            	var tmpb = new google.maps.Marker({
 						map: map,
 						position: tmpa});
-	           
+	           		mc.addMarker(tmpb,false);
 	            	
 	            	var tmpc = new google.maps.InfoWindow();
 	            	tmpc.setContent(readpoint[3]+' : '+readpoint[0]);
 					  google.maps.event.addListener(tmpb, 'click', function() {
 						  tmpc.open(map, tmpb);
 					  });
+					pointArray.push(new google.maps.LatLng(readpoint[1],readpoint[2]));
 	            	
-	            	
-	            	
-	            	var pointArray = new google.maps.MVCArray(tmpa);
+	            	/*var pointArray = new google.maps.MVCArray(tmpa);
 	        		heatmap = new google.maps.visualization.HeatmapLayer({
 	        		    data: pointArray
-	        		  });
+	        		  });*/
 	        		//var mcOptions = {gridSize: 50, maxZoom: 15};
 	        		//mc = new MarkerClusterer(map);
 	        		//mc.add
-	        		heatmap.setMap(map2);	
+	        		//heatmap.setMap(map2);	
 	            	
 	            	
 	            	
@@ -200,10 +199,6 @@
 	    }
 	   
 		function buttonSubmitFunction(){
-			
-			
-			
-			
 			infowindow=[];taxiData=[];
 			var i=0;
 			for(;i<marker.length;i++){
@@ -211,7 +206,9 @@
     		}
 			marker=[];
 			mainMap();
-			heatMap();
+			//heatMap();
+			var mcOptions = {gridSize: 50, maxZoom: 15};
+			mc = new MarkerClusterer(map,marker,mcOptions);
 			var text = document.getElementById("wordtobesearch").value;
 			var option = document.createElement("option");
 			option.text = text;
@@ -222,9 +219,25 @@
 				document.getElementById("stopSubmit").disabled=false;
 			}
 		}
-		
+		function filterFunction(){
+			infowindow=[];taxiData=[];
+			var i=0;
+			for(;i<marker.length;i++){
+    			marker[i].setMap(null);
+    		}
+			marker=[];
+			mainMap();
+			//heatMap();
+			pointArray.clear();
+			var mcOptions = {gridSize: 50, maxZoom: 15};
+			mc = new MarkerClusterer(map,marker,mcOptions);
+			var text = document.getElementById("filter").value;
+			if (text!=""){
+				webSocket.send(text);
+			}
+		}
 		function stopSubmitFunction(){
-			webSocket.send("stop");
+			webSocket.send("----stop");
 			infowindow=[];taxiData=[];marker=[];
 			document.getElementById("buttonSubmit").disabled=false;
 			document.getElementById("stopSubmit").disabled=true;
@@ -257,7 +270,7 @@ Filter Selection<form action="MyServlet" method="get">
 		}
 	%>
 </select>
-<input type="submit" name="act" value="filter">
+<input type="button" onclick="filterFunction()" value="filter">
 <input type="submit" name="act" value="delete"><br>
 </form>
 </td>

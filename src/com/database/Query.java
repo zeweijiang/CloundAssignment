@@ -6,7 +6,7 @@ import java.util.*;
 import com.beans.*;
 public class Query {
 	private Connection conn;
-	private int limit=200;
+	private int limit=2000;
 	public Query(Connection conn){
 		this.conn = conn;
 	}

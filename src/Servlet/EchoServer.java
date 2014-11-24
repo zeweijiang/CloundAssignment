@@ -1,12 +1,16 @@
 package Servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+
+import com.beans.TweetInfo;
  
 /** 
  * @ServerEndpoint gives the relative name for the end point
@@ -23,8 +27,8 @@ public class EchoServer {
      * In the method onOpen, we'll let the user know that the handshake was 
      * successful.
      */
-	Session s;
-	boolean startTransmit=false;
+	public static Session s;
+	Reply r;
     @OnOpen
     public void onOpen(Session session){
         System.out.println(session.getId() + " has opened a connection"); 
@@ -33,19 +37,39 @@ public class EchoServer {
     }
     class Reply extends Thread{
     	String key;
+    	boolean startTransmit=true;
     	public Reply(String key){
     		this.key=key;
     	}
+    	public void end(){
+    		startTransmit=false;
+    	}
     	public void run(){
-    		MyServlet.ua.startStream(key);
+    		if(MyServlet.database.checkFilterExist(key)){
+    			Collection<TweetInfo> list = MyServlet.database.getTwitterList(key).values();
+    			for(TweetInfo t:list){
+					try {
+	    				s.getBasicRemote().sendText(t.getText());
+						s.getBasicRemote().sendText(String.valueOf(t.getLatitude()));
+						s.getBasicRemote().sendText(String.valueOf(t.getLongitude()));
+						s.getBasicRemote().sendText(t.getTime());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+    			}
+    		}
+    		if(!MyServlet.ua.isSearching(key)){
+    			MyServlet.ua.changeFilter(key);
+    		}
     		while(startTransmit){
     			String[] tmp= new String[4];
-    			tmp=MyServlet.ua.getCurrent();
+    			tmp=MyServlet.ua.getCurrent(key);
     			//System.out.println("!!!!");
-    			if(tmp!=null){
+    			if(tmp!=null&&tmp[0]!=null&tmp[1]!=null&&tmp[2]!=null&tmp[3]!=null){
     				//System.out.println("dsds");
     				try {
-    					//System.out.println(tmp[0]);
+    					//System.out.println("!!!"+tmp[0]);
 						s.getBasicRemote().sendText(tmp[0]);
 						s.getBasicRemote().sendText(tmp[1]);
 						s.getBasicRemote().sendText(tmp[2]);
@@ -62,7 +86,7 @@ public class EchoServer {
 					e.printStackTrace();
 				}
     		}
-    		MyServlet.ua.endStream(key);
+    		//MyServlet.ua.endStream(key);
     	}
     }
     /**
@@ -71,10 +95,12 @@ public class EchoServer {
      */
     @OnMessage
     public void onMessage(String message, Session session){
-    	if(!message.equals("stop")){
-    	startTransmit=true;
+    	if(!message.equals("----stop")){
+    	if(r!=null){
+    		r.end();
+    	}
     	System.out.println(message);
-    	Reply r = new Reply(message);
+    	r = new Reply(message);
     	r.start();
         //System.out.println("Message from " + session.getId() + ": " + message);
         /*try {
@@ -83,7 +109,7 @@ public class EchoServer {
             ex.printStackTrace();
         }*/
     	}else{
-    		startTransmit=false;
+    		//r.end();
     	}
     }
  
@@ -95,6 +121,8 @@ public class EchoServer {
     @OnClose
     public void onClose(Session session){
         System.out.println("Session " +session.getId()+" has ended");
-        startTransmit=false;
+        if(r!=null){
+    		r.end();
+    	}
     }
 }
