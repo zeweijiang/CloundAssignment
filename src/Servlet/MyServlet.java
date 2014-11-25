@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import UserApplication.UserApplication;
 
+import org.json.*;
 import com.beans.TweetInfo;
 import com.database.DB;
 
@@ -54,7 +55,12 @@ public class MyServlet extends HttpServlet {
 		throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		super.service(request, response);
-		processRequest(request,response);
+		try {
+			processRequest(request,response);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		/*System.out.println(request.getParameter("sub"));*/
 	}
 	/**
@@ -63,7 +69,9 @@ public class MyServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response){
+
+	protected void processRequest(HttpServletRequest request,
+			HttpServletResponse response) throws JSONException {
 		//String a = request.getParameter("x-amz-sns-message-type");
 		//System.out.println("!!!!");
 		/*Enumeration<String> a = request.getParameterNames();
