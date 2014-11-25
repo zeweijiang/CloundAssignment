@@ -14,10 +14,10 @@ public class UserApplication {
 	TwitterStream twitterStream;
 	HashSet<String> stream = new HashSet<String>();
 	ArrayList<String> keys = new ArrayList<String>();
-	String currentText=null;
-	String currentLatitude=null;
-	String currentLongitude=null;
-	String currentTimeStamp=null;
+	//String currentText=null;
+	//String currentLatitude=null;
+	//String currentLongitude=null;
+	//String currentTimeStamp=null;
 	FilterQuery tweetFilterQuery;
 	public ArrayList<String> getStream(){
 		return keys;
@@ -71,6 +71,7 @@ public class UserApplication {
 		resetFilter();
         return true;
 	}
+	/*
 	public String[] getCurrent(String key){
 		if(currentText!=null&&currentLatitude!=null&&currentLongitude!=null&&currentTimeStamp!=null&&currentText.contains(key)){
 			String[] tmps= new String[4];
@@ -86,7 +87,7 @@ public class UserApplication {
 		}else{
 			return null;
 		}
-	}
+	}*/
 	public void resetFilter(){
         String[] f = new String[stream.size()];
         int i=0;
@@ -136,12 +137,12 @@ public class UserApplication {
 					//System.out.println(currentLongitude=String.valueOf(arg0.getGeoLocation().getLatitude()));
 					//System.out.println(currentTimeStamp=arg0.getCreatedAt().toString());
 					//System.out.println("text="+arg0.getText());
-					currentText=arg0.getText();
-					currentLatitude=String.valueOf(arg0.getGeoLocation().getLatitude());
-					currentLongitude=String.valueOf(arg0.getGeoLocation().getLongitude());					
+					//currentText=arg0.getText();
+					//currentLatitude=String.valueOf(arg0.getGeoLocation().getLatitude());
+					//currentLongitude=String.valueOf(arg0.getGeoLocation().getLongitude());					
 					//System.out.println(currentLatitude=String.valueOf(arg0.getPlace().getGeometryCoordinates()[0][0].getLatitude()));
 					//System.out.println(currentLongitude=String.valueOf(arg0.getPlace().getGeometryCoordinates()[0][0].getLongitude()));
-					currentTimeStamp=arg0.getCreatedAt().toString();
+					//currentTimeStamp=arg0.getCreatedAt().toString();
 					//System.out.println("text="+arg0.getText());
 					ArrayList<String> keys = getKey(stream, arg0.getText());
 					//System.out.println("+++++++="+keys);

@@ -121,7 +121,7 @@
 	            return;
 	        }
 	        // Create a new instance of the websocket
-	        webSocket = new WebSocket("ws://localhost:8080/CloudTwitterMap/echo");
+	        webSocket = new WebSocket("ws://160.39.236.27:8080/CloudTwitterMap/echo");
 	        /**
 	         * Binds functions to the listeners for the websocket.
 	         */

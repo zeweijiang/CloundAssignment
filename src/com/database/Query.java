@@ -6,7 +6,7 @@ import java.util.*;
 import com.beans.*;
 public class Query {
 	private Connection conn;
-	private int limit=2000;
+	private int limit=20;
 	public Query(Connection conn){
 		this.conn = conn;
 	}
@@ -99,6 +99,28 @@ public class Query {
 	}
 	public void setLimit(int limit){
 		this.limit=limit;
+	}
+	public ArrayList<TweetInfo> getAfter(String key, long index){
+		ArrayList<TweetInfo> result = new ArrayList<TweetInfo>();
+		ResultSet rset;
+		try{
+			Statement stmt = conn.createStatement();
+			rset = stmt.executeQuery("select * from tweet where key_word='"+key+"' and tweet_id>"+index);
+			while(rset.next()){
+				Long id = Long.parseLong(rset.getString(1));
+					TweetInfo tmp = new TweetInfo();
+					Double lati = Double.parseDouble(rset.getString(4));
+					Double longti =  Double.parseDouble(rset.getString(5));
+					if(lati!=null && longti!=null){
+						tmp.setAll(id,rset.getString(2), rset.getString(3), lati, longti, rset.getString(6));
+						result.add(tmp);
+					}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 	public void delete(String key){
 		try {

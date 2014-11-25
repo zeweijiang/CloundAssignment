@@ -26,7 +26,7 @@ public class MyServlet extends HttpServlet {
 	ArrayList<String> filterList;
 	ArrayList<Integer> numberInFilterList = new ArrayList<Integer>();
 	String currentKey;
-	int currentLimit=2000;
+	int currentLimit=30;
     /**
      * @see HttpServlet#HttpServlet()
      */

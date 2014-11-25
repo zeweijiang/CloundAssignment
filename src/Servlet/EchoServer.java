@@ -27,25 +27,26 @@ public class EchoServer {
      * In the method onOpen, we'll let the user know that the handshake was 
      * successful.
      */
-	public static Session s;
 	Reply r;
     @OnOpen
     public void onOpen(Session session){
         System.out.println(session.getId() + " has opened a connection"); 
         //session.getBasicRemote().sendText("Connection Established");
-		s=session;
     }
     class Reply extends Thread{
+    	long index=0;//search for the tweets with id larger than index.
     	String key;
+    	Session s;
     	boolean startTransmit=true;
-    	public Reply(String key){
+    	public Reply(Session s,String key){
     		this.key=key;
+    		this.s=s;
     	}
     	public void end(){
     		startTransmit=false;
     	}
     	public void run(){
-    		if(MyServlet.database.checkFilterExist(key)){
+    		/*if(MyServlet.database.checkFilterExist(key)){
     			Collection<TweetInfo> list = MyServlet.database.getTwitterList(key).values();
     			for(TweetInfo t:list){
 					try {
@@ -58,29 +59,25 @@ public class EchoServer {
 						e.printStackTrace();
 					}
     			}
-    		}
+    		}*/
     		if(!MyServlet.ua.isSearching(key)){
     			MyServlet.ua.changeFilter(key);
     		}
     		while(startTransmit){
-    			String[] tmp= new String[4];
-    			tmp=MyServlet.ua.getCurrent(key);
-    			//System.out.println("!!!!");
-    			if(tmp!=null&&tmp[0]!=null&tmp[1]!=null&&tmp[2]!=null&tmp[3]!=null){
-    				//System.out.println("dsds");
+    			for(TweetInfo t:MyServlet.database.getAfter(key, index)){
     				try {
-    					//System.out.println("!!!"+tmp[0]);
-						s.getBasicRemote().sendText(tmp[0]);
-						s.getBasicRemote().sendText(tmp[1]);
-						s.getBasicRemote().sendText(tmp[2]);
-						s.getBasicRemote().sendText(tmp[3]);
+						s.getBasicRemote().sendText(t.getText());
+						s.getBasicRemote().sendText(String.valueOf(t.getLatitude()));
+						s.getBasicRemote().sendText(String.valueOf(t.getLongitude()));
+						s.getBasicRemote().sendText(t.getTime());
+						index=t.getId();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
     			}
     			try {
-					Thread.sleep(10);
+					Thread.sleep(50);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -100,7 +97,7 @@ public class EchoServer {
     		r.end();
     	}
     	System.out.println(message);
-    	r = new Reply(message);
+    	r = new Reply(session, message);
     	r.start();
         //System.out.println("Message from " + session.getId() + ": " + message);
         /*try {

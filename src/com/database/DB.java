@@ -78,6 +78,9 @@ public class DB
 	public void readPosition(HashMap<String,HashMap<Long, TweetInfo>> list, String key){
 		query.read(list, key);
 	}
+	public ArrayList<TweetInfo> getAfter(String key, long index){
+		return query.getAfter(key, index);
+	}
 	public ArrayList<String> filterList(ArrayList<Integer> numbers, ArrayList<String> addition){
 		ArrayList<String> result = new ArrayList<String>();
 		HashSet<String> tmp = new HashSet<String>();
