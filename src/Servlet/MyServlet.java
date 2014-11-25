@@ -16,9 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 import UserApplication.UserApplication;
 
 import org.json.*;
+
+import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.beans.TweetInfo;
 import com.database.DB;
-
 /**
  * Servlet implementation class MyServlet
  */
@@ -39,7 +40,7 @@ public class MyServlet extends HttpServlet {
         try {
 			database.connect();
 			ua = new UserApplication(database);
-			//SQSsend.send("asd", "sdfskdjkh", "sdsds", "dsds", "skhkjh");
+			AmazonSQSClient a = new AmazonSQSClient();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
