@@ -6,10 +6,13 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.json.JSONObject;
+import com.amazonaws.util.json.JSONException;
+import com.amazonaws.util.json.JSONObject;
+
 
 public class FetchSentiment {
-	public static void fetchSentiment(HttpServletRequest request){
+	public static void fetchSentiment(HttpServletRequest request)
+			throws JSONException {
 		String receivedData=getPostData(request);
 		System.out.println(receivedData);
 		if(receivedData.startsWith("{")){
