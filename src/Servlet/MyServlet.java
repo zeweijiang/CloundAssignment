@@ -1,9 +1,12 @@
 package Servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,7 +23,7 @@ import com.database.DB;
  */
 public class MyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    static public DB database = new DB();
+    public static DB database = new DB();
 	public static UserApplication ua;
 	HashMap<String,HashMap<Long, TweetInfo>> wholeList = new HashMap<String,HashMap<Long, TweetInfo>>();
 	ArrayList<String> filterList;
@@ -35,6 +38,7 @@ public class MyServlet extends HttpServlet {
         try {
 			database.connect();
 			ua = new UserApplication(database);
+			//SQSsend.send("asd", "sdfskdjkh", "sdsds", "dsds", "skhkjh");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,7 +64,13 @@ public class MyServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 	}
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response){
-		String requestName;
+		//String a = request.getParameter("x-amz-sns-message-type");
+		//System.out.println("!!!!");
+		/*Enumeration<String> a = request.getParameterNames();
+		while(a.hasMoreElements()){
+			System.out.println(a.nextElement());
+		};*/
+		FetchSentiment.fetchSentiment(request);
 		String keys = request.getParameter("keys");
 		filterList = database.filterList(numberInFilterList, ua.getStream());
 		String filter = request.getParameter("filter");

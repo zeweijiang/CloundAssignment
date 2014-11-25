@@ -10,7 +10,7 @@ public class Query {
 	public Query(Connection conn){
 		this.conn = conn;
 	}
-	public void insert(long id, String key, String text, double latitude, double longitude, String time){
+	public void insert(long id, String key, String text, double latitude, double longitude, String time,String senti){
 		try {
 			Statement stmt = conn.createStatement();
 			StringBuffer sb = new StringBuffer();
@@ -23,7 +23,7 @@ public class Query {
 				}
 				sb.append(text.charAt(i));
 			}
-			stmt.execute("insert into tweet values("+id+",'"+key+"','"+sb.toString()+"','"+latitude+"','"+longitude+"','"+time+"')");
+			stmt.execute("insert into tweet values("+id+",'"+key+"','"+sb.toString()+"','"+latitude+"','"+longitude+"','"+time+"','"+senti+"')");
 			ResultSet rset = stmt.executeQuery("select count(*) from tweet where key_word='"+key+"'");
 			int number=0;
 			if(rset.next()){
@@ -54,7 +54,7 @@ public class Query {
 					Double lati = Double.parseDouble(rset.getString(4));
 					Double longti =  Double.parseDouble(rset.getString(5));
 					if(lati!=null && longti!=null){
-						tmp.setAll(id,rset.getString(2), rset.getString(3), lati, longti, rset.getString(6));
+						tmp.setAll(id,rset.getString(2), rset.getString(3), lati, longti, rset.getString(6),rset.getString(7));
 						tweetList.put(id,tmp);
 					}
 				}
@@ -112,7 +112,7 @@ public class Query {
 					Double lati = Double.parseDouble(rset.getString(4));
 					Double longti =  Double.parseDouble(rset.getString(5));
 					if(lati!=null && longti!=null){
-						tmp.setAll(id,rset.getString(2), rset.getString(3), lati, longti, rset.getString(6));
+						tmp.setAll(id,rset.getString(2), rset.getString(3), lati, longti, rset.getString(6),rset.getString(7));
 						result.add(tmp);
 					}
 			}

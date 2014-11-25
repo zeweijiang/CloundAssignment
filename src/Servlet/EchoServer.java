@@ -70,6 +70,7 @@ public class EchoServer {
 						s.getBasicRemote().sendText(String.valueOf(t.getLatitude()));
 						s.getBasicRemote().sendText(String.valueOf(t.getLongitude()));
 						s.getBasicRemote().sendText(t.getTime());
+						s.getBasicRemote().sendText(t.getSenti());
 						index=t.getId();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block

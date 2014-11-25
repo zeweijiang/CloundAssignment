@@ -72,8 +72,8 @@ public class DB
 			return null;
 		}
 	}
-	public void fetchPosition(long id, String key, String Text, double Lat, double Long, String time){
-		query.insert(id, key, Text, Lat, Long, time);
+	public void fetchPosition(long id, String key, String Text, double Lat, double Long, String time,String senti){
+		query.insert(id, key, Text, Lat, Long, time,senti);
 	}
 	public void readPosition(HashMap<String,HashMap<Long, TweetInfo>> list, String key){
 		query.read(list, key);

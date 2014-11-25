@@ -12,7 +12,7 @@ public class UserApplication {
 	DB database;
 	ConfigurationBuilder configurationBuilder;
 	TwitterStream twitterStream;
-	HashSet<String> stream = new HashSet<String>();
+	public HashSet<String> stream = new HashSet<String>();
 	ArrayList<String> keys = new ArrayList<String>();
 	//String currentText=null;
 	//String currentLatitude=null;
@@ -144,11 +144,6 @@ public class UserApplication {
 					//System.out.println(currentLongitude=String.valueOf(arg0.getPlace().getGeometryCoordinates()[0][0].getLongitude()));
 					//currentTimeStamp=arg0.getCreatedAt().toString();
 					//System.out.println("text="+arg0.getText());
-					ArrayList<String> keys = getKey(stream, arg0.getText());
-					//System.out.println("+++++++="+keys);
-					for(String key:keys){
-						database.fetchPosition(arg0.getId(),key, arg0.getText(),arg0.getGeoLocation().getLatitude(),arg0.getGeoLocation().getLongitude(),arg0.getCreatedAt().toString());	
-					}
 				}
 			}
 
@@ -156,16 +151,16 @@ public class UserApplication {
 			public void onTrackLimitationNotice(int arg0) {
 				// TODO Auto-generated method stub
 			}
-			private ArrayList<String> getKey(HashSet<String> keySet, String text){
-				//System.out.println("keySet="+keySet);
-				ArrayList<String> keyList =new ArrayList<String>();
-				for(String key: keySet){
-					if(text.contains(key)){
-						keyList.add(key);
-					}
-				}
-				return keyList;
-			}
         });
+	}
+	public ArrayList<String> getKey(String text){
+		//System.out.println("keySet="+keySet);
+		ArrayList<String> keyList =new ArrayList<String>();
+		for(String key: stream){
+			if(text.contains(key)){
+				keyList.add(key);
+			}
+		}
+		return keyList;
 	}
 }
