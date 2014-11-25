@@ -22,11 +22,11 @@ public class FetchSentiment {
 			String time = (String) messageAttribute.getJSONObject("time").getString("Value");
 			String text = (String) messageAttribute.getJSONObject("text").getString("Value");
 			String senti = (String) messageAttribute.getJSONObject("senti").getString("Value");
-			MyServlet.database.fetchPosition(id, "dsds", text, lat, lon, time, senti);	
-			//ArrayList<String> keys = MyServlet.ua.getKey(text);
-			/*for(String key:keys){
+			//MyServlet.database.fetchPosition(id, "dsds", text, lat, lon, time, senti);	
+			ArrayList<String> keys = MyServlet.ua.getKey(text);
+			for(String key:keys){
 				MyServlet.database.fetchPosition(id, key, text, lat, lon, time, senti);	
-			}*/
+			}
 		}
 	}
 	public static String getPostData(HttpServletRequest req) {

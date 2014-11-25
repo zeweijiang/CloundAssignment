@@ -2,6 +2,10 @@ package UserApplication;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.sqs.AmazonSQSClient;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.services.sqs.model.SendMessageResult;
 import com.database.DB;
 
 import twitter4j.*;
@@ -14,6 +18,9 @@ public class UserApplication {
 	TwitterStream twitterStream;
 	public HashSet<String> stream = new HashSet<String>();
 	ArrayList<String> keys = new ArrayList<String>();
+	AmazonSQSClient sqs =new AmazonSQSClient(new ProfileCredentialsProvider("default")
+	.getCredentials());
+	String myQueueUrl="https://sqs.us-east-1.amazonaws.com/668249848517/Cloud";
 	//String currentText=null;
 	//String currentLatitude=null;
 	//String currentLongitude=null;
@@ -130,6 +137,7 @@ public class UserApplication {
 			public void onStatus(Status arg0) {
 				// TODO Auto-generated method stub
 				if(arg0.getGeoLocation()!=null){
+					//System.out.println("asdfasdfasdfasfd");
 					//arg0.getPlace().getGeometryCoordinates()
 					//System.out.println("text="+arg0.getText());
 					//System.out.println(currentText=arg0.getText());
@@ -144,6 +152,22 @@ public class UserApplication {
 					//System.out.println(currentLongitude=String.valueOf(arg0.getPlace().getGeometryCoordinates()[0][0].getLongitude()));
 					//currentTimeStamp=arg0.getCreatedAt().toString();
 					//System.out.println("text="+arg0.getText());
+					JSONObject jo = new JSONObject();
+					try {
+						jo.put("id", String.valueOf(arg0.getId()));
+						jo.put("text", arg0.getText());
+						jo.put("lat", String.valueOf(arg0.getGeoLocation().getLatitude()));
+						jo.put("lon",String.valueOf( arg0.getGeoLocation().getLongitude()));
+						jo.put("time", arg0.getCreatedAt());
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					SendMessageResult smr=sqs.sendMessage(new SendMessageRequest().withQueueUrl(myQueueUrl)
+							.withMessageBody(jo.toString()));
+					//System.out.println(smr.getMessageId());
+					
 				}
 			}
 
