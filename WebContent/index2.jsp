@@ -3,17 +3,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<% HashMap<String, HashMap<Integer, TweetInfo>> wholeList;
-	   wholeList = (HashMap<String, HashMap<Integer, TweetInfo>>)request.getAttribute("wholeList");
+	<% 
 	   String filterKey = (String)request.getAttribute("filterKey");
-	   int size=0;
-	   ArrayList<TweetInfo> listAfterFilter = new ArrayList<TweetInfo>();
-	   if(wholeList!=null && filterKey!=null && wholeList.get(filterKey)!=null){
-	   		size = wholeList.get(filterKey).size();
-	   		for(TweetInfo tweet:wholeList.get(filterKey).values()){
-	   			listAfterFilter.add(tweet);
-	   		}
-	   }
 	%>
 	<script type="text/javascript" 
      src="http://maps.google.com/maps/api/js?  
@@ -52,24 +43,6 @@
 	var infowindow=[];
 	var mc;
 	function initialPoints(){
-		<%
-		if(listAfterFilter.size()!=0){
-			for(int index=0;index<size;index++){
-				%>
-				taxiData[<%=index%>]=new google.maps.LatLng(<%=listAfterFilter.get(index).getLatitude()%>,<%=listAfterFilter.get(index).getLongitude()%>);
-				marker[<%=index%>] = new google.maps.Marker({
-					map: map,
-					position: new google.maps.LatLng(<%=listAfterFilter.get(index).getLatitude()%>,<%=listAfterFilter.get(index).getLongitude()%>)
-					});
-				infowindow[<%=index%>] = new google.maps.InfoWindow();
-				  infowindow[<%=index%>].setContent('<%=listAfterFilter.get(index).getTime()%> : '+'<%=listAfterFilter.get(index).getQueryText()%>');
-				  google.maps.event.addListener(marker[<%=index%>], 'click', function() {
-					  infowindow[<%=index%>].open(map, marker[<%=index%>]);
-				  });
-				<%
-			}
-		}
-		%>
 		pointArray = new google.maps.MVCArray(taxiData);
 		heatmap = new google.maps.visualization.HeatmapLayer({
 		    data: pointArray
@@ -90,7 +63,7 @@
 		heatMap();
 		initialPoints();
 		openSocket();
-		clearMarker();
+		//clearMarker();
 	}
 	function mainMap(){
 		var latlng= new google.maps.LatLng(0,0);
@@ -245,10 +218,7 @@
 	
 </script>
 <% 
-	ArrayList<String> keyList=(ArrayList<String>)request.getAttribute("keys");
 	ArrayList<String> filterList=(ArrayList<String>)request.getAttribute("filterList");
-	ArrayList<Integer> numbers = (ArrayList<Integer>)request.getAttribute("number");
-	int limit = (Integer)request.getAttribute("limit");
 %>
 <table>
 <tr>
