@@ -40,7 +40,6 @@ public class MyServlet extends HttpServlet {
         try {
 			database.connect();
 			ua = new UserApplication(database);
-			AmazonSQSClient a = new AmazonSQSClient();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
