@@ -23,7 +23,7 @@ public class FetchSentiment {
 			String time = (String) messageAttribute.getJSONObject("time").getString("Value");
 			String text = (String) jo.get("Message");
 			String senti = (String) messageAttribute.getJSONObject("senti").getString("Value");
-			System.out.println(text);
+			//System.out.println(text);
 			//MyServlet.database.fetchPosition(id, "dsds", text, lat, lon, time, senti);
 			if(senti.equals("error")){
 				senti="0";
