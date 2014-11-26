@@ -40,6 +40,7 @@ public class MyServlet extends HttpServlet {
         try {
 			database.connect();
 			ua = new UserApplication(database);
+			//new WorkPool().start();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -78,7 +79,7 @@ public class MyServlet extends HttpServlet {
 		while(a.hasMoreElements()){
 			System.out.println(a.nextElement());
 		};*/
-		FetchSentiment.fetchSentiment(request);
+		//FetchSentiment.fetchSentiment(request);
 		String keys = request.getParameter("keys");
 		filterList = database.filterList(numberInFilterList, ua.getStream());
 		String filter = request.getParameter("filter");

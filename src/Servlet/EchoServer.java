@@ -34,7 +34,7 @@ public class EchoServer {
         //session.getBasicRemote().sendText("Connection Established");
     }
     class Reply extends Thread{
-    	long index=0;//search for the tweets with id larger than index.
+    	long index=-1;//search for the tweets with id larger than index.
     	String key;
     	Session s;
     	boolean startTransmit=true;
@@ -71,7 +71,8 @@ public class EchoServer {
 						s.getBasicRemote().sendText(String.valueOf(t.getLongitude()));
 						s.getBasicRemote().sendText(t.getTime());
 						s.getBasicRemote().sendText(t.getSenti());
-						index=t.getId();
+						index=t.getPriority();
+						//System.out.println(index);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -97,7 +98,7 @@ public class EchoServer {
     	if(r!=null){
     		r.end();
     	}
-    	System.out.println(message);
+    	//System.out.println(message);
     	r = new Reply(session, message);
     	r.start();
         //System.out.println("Message from " + session.getId() + ": " + message);

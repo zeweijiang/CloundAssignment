@@ -6,7 +6,7 @@ import java.util.*;
 import com.beans.*;
 public class Query {
 	private Connection conn;
-	private int limit=20;
+	private int limit=200;
 	public Query(Connection conn){
 		this.conn = conn;
 	}
@@ -23,7 +23,8 @@ public class Query {
 				}
 				sb.append(text.charAt(i));
 			}
-			stmt.execute("insert into tweet values("+id+",'"+key+"','"+sb.toString()+"','"+latitude+"','"+longitude+"','"+time+"','"+senti+"')");
+			//System.out.println("insert into tweet values("+id+",'"+key+"','"+sb.toString()+"','"+latitude+"','"+longitude+"','"+time+"','"+senti+"')");
+			stmt.execute("insert into tweet(tweet_id,key_word,context,latitude,longitude,time,senti) values("+id+",'"+key+"','"+sb.toString()+"','"+latitude+"','"+longitude+"','"+time+"','"+senti+"')");
 			ResultSet rset = stmt.executeQuery("select count(*) from tweet where key_word='"+key+"'");
 			int number=0;
 			if(rset.next()){
@@ -53,8 +54,9 @@ public class Query {
 					TweetInfo tmp = new TweetInfo();
 					Double lati = Double.parseDouble(rset.getString(4));
 					Double longti =  Double.parseDouble(rset.getString(5));
+					long priority = Long.parseLong(rset.getString(8));
 					if(lati!=null && longti!=null){
-						tmp.setAll(id,rset.getString(2), rset.getString(3), lati, longti, rset.getString(6),rset.getString(7));
+						tmp.setAll(id,rset.getString(2), rset.getString(3), lati, longti, rset.getString(6),rset.getString(7),priority);
 						tweetList.put(id,tmp);
 					}
 				}
@@ -105,14 +107,15 @@ public class Query {
 		ResultSet rset;
 		try{
 			Statement stmt = conn.createStatement();
-			rset = stmt.executeQuery("select * from tweet where key_word='"+key+"' and tweet_id>"+index);
+			rset = stmt.executeQuery("select * from tweet where key_word='"+key+"' and priority>"+index);
 			while(rset.next()){
 				Long id = Long.parseLong(rset.getString(1));
 					TweetInfo tmp = new TweetInfo();
 					Double lati = Double.parseDouble(rset.getString(4));
 					Double longti =  Double.parseDouble(rset.getString(5));
+					long priority = Long.parseLong(rset.getString(8));
 					if(lati!=null && longti!=null){
-						tmp.setAll(id,rset.getString(2), rset.getString(3), lati, longti, rset.getString(6),rset.getString(7));
+						tmp.setAll(id,rset.getString(2), rset.getString(3), lati, longti, rset.getString(6),rset.getString(7),priority);
 						result.add(tmp);
 					}
 			}
@@ -120,6 +123,7 @@ public class Query {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//System.out.println("size="+result.size());
 		return result;
 	}
 	public void delete(String key){

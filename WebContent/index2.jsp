@@ -25,7 +25,7 @@
 </div> -->
 <!-- Server responses get written here -->
 <div id="messages"></div>
-
+<div id="senti"></div>
 <!-- Script to utilise the WebSocket -->
 <script type="text/javascript">
                
@@ -42,6 +42,8 @@
 	var marker=[];
 	var infowindow=[];
 	var mc;
+	var overall=0.0;
+	var totalsenti=0.0;
 	function initialPoints(){
 		pointArray = new google.maps.MVCArray(taxiData);
 		heatmap = new google.maps.visualization.HeatmapLayer({
@@ -119,10 +121,14 @@
 	            	currentState=3;
 	            	readpoint[2]=event.data;
 	            }else if(currentState==3){
-	            	currentState=0;
+	            	currentState=4;
 	            	readpoint[3]=event.data;
-	            	
-	            	
+	            }else if (currentState==4){
+	            	overall=overall+1;
+	            	//totalsenti=parseFloat(totalsenti)+parseFloat(event.data);
+	            	//writeResponse(event.data*100);
+	            	currentState=0;
+	            	readpoint[4]=event.data;
 	            	var tmpa=new google.maps.LatLng(readpoint[1],readpoint[2]);
 	            	var tmpb = new google.maps.Marker({
 						map: map,
@@ -130,7 +136,7 @@
 	           		mc.addMarker(tmpb,false);
 	            	
 	            	var tmpc = new google.maps.InfoWindow();
-	            	tmpc.setContent(readpoint[3]+' : '+readpoint[0]);
+	            	tmpc.setContent('sentiment: '+readpoint[4]+' | '+readpoint[3]+' : '+readpoint[0]);
 					  google.maps.event.addListener(tmpb, 'click', function() {
 						  tmpc.open(map, tmpb);
 					  });
@@ -145,7 +151,7 @@
 	        		//mc.add
 	        		//heatmap.setMap(map2);	
 	            	
-	            	
+					//writeResponse(overall);
 	            	
 	            }
 	        };
@@ -168,7 +174,7 @@
 	    }
 
 	    function writeResponse(text){
-	        messages.innerHTML += "<br/>" + text;
+	        messages.innerHTML =  text;
 	    }
 	   
 		function buttonSubmitFunction(){
@@ -208,6 +214,8 @@
 			if (text!=""){
 				webSocket.send(text);
 			}
+			overall=0.0;
+			totalsenti=0.0;
 		}
 		function stopSubmitFunction(){
 			webSocket.send("----stop");

@@ -2,6 +2,8 @@ package UserApplication;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import Servlet.MyServlet;
+
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
@@ -18,7 +20,7 @@ public class UserApplication {
 	TwitterStream twitterStream;
 	public HashSet<String> stream = new HashSet<String>();
 	ArrayList<String> keys = new ArrayList<String>();
-	AmazonSQSClient sqs =new AmazonSQSClient(new ProfileCredentialsProvider("default")
+	AmazonSQSClient sqs =new AmazonSQSClient(new ProfileCredentialsProvider("jiangzewei")
 	.getCredentials());
 	String myQueueUrl="https://sqs.us-east-1.amazonaws.com/668249848517/Cloud";
 	//String currentText=null;
@@ -163,11 +165,18 @@ public class UserApplication {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-
+					//System.out.println(arg0.getText());
 					SendMessageResult smr=sqs.sendMessage(new SendMessageRequest().withQueueUrl(myQueueUrl)
 							.withMessageBody(jo.toString()));
 					//System.out.println(smr.getMessageId());
-					
+					/*
+					ArrayList<String> keys = MyServlet.ua.getKey(arg0.getText());
+					 
+					for(String key:keys){
+						MyServlet.database.fetchPosition(arg0.getId(),key, arg0.getText(), arg0.getGeoLocation().getLatitude(), arg0.getGeoLocation().getLongitude(), arg0.getCreatedAt().toString(), String.valueOf(Math.random()));
+						//System.out.println("get one");
+					}
+					*/
 				}
 			}
 

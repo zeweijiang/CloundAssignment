@@ -13,19 +13,25 @@ public class FetchSentiment {
 	public static void fetchSentiment(HttpServletRequest request)
 			throws JSONException {
 		String receivedData=getPostData(request);
-		System.out.println(receivedData);
+		//System.out.println(receivedData);
 		if(receivedData.startsWith("{")){
-			JSONObject messageAttribute = new JSONObject(receivedData).getJSONObject("MessageAttributes");
+			JSONObject jo = new JSONObject(receivedData);
+			JSONObject messageAttribute = jo.getJSONObject("MessageAttributes");
 			long id = Long.parseLong((String) messageAttribute.getJSONObject("id").getString("Value"));
 			double lat = Double.parseDouble((String)messageAttribute.getJSONObject("lat").getString("Value"));
 			double lon = Double.parseDouble((String)messageAttribute.getJSONObject("lon").getString("Value"));
 			String time = (String) messageAttribute.getJSONObject("time").getString("Value");
-			String text = (String) messageAttribute.getJSONObject("text").getString("Value");
+			String text = (String) jo.get("Message");
 			String senti = (String) messageAttribute.getJSONObject("senti").getString("Value");
-			//MyServlet.database.fetchPosition(id, "dsds", text, lat, lon, time, senti);	
+			System.out.println(text);
+			//MyServlet.database.fetchPosition(id, "dsds", text, lat, lon, time, senti);
+			if(senti.equals("error")){
+				senti="0";
+			}
 			ArrayList<String> keys = MyServlet.ua.getKey(text);
 			for(String key:keys){
-				MyServlet.database.fetchPosition(id, key, text, lat, lon, time, senti);	
+				MyServlet.database.fetchPosition(id, key, text, lat, lon, time, senti);
+				//System.out.println("get one");
 			}
 		}
 	}

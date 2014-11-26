@@ -8,12 +8,16 @@ public class TweetInfo {
 	private double longitude;
 	private String time;
 	private String senti;
+	private long priority;
 	private String queryText;
 	public long getId(){
 		return id;
 	}
 	public String getKey(){
 		return key;
+	}
+	public long getPriority(){
+		return priority;
 	}
 	public String getSenti(){
 		return senti;
@@ -39,6 +43,9 @@ public class TweetInfo {
 	public void setSenti(String senti){
 		this.senti=senti;
 	}
+	public void setPriority(long priority){
+		this.priority=priority;
+	}
 	public void setKey(String key){
 		this.key=key;
 	}
@@ -62,7 +69,7 @@ public class TweetInfo {
 	public void setTime(String time){
 		this.time=time;
 	}
-	public void setAll(long id, String key, String text, double latitude, double longitude, String time,String senti){
+	public void setAll(long id, String key, String text, double latitude, double longitude, String time,String senti,long priority){
 		setId(id);
 		setKey(key);
 		setText(text);
@@ -70,6 +77,7 @@ public class TweetInfo {
 		setLongitude(longitude);
 		setTime(time);
 		setSenti(senti);
+		setPriority(priority);
 	}
 }
 
