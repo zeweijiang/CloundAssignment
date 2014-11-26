@@ -26,7 +26,7 @@ import com.database.DB;
 public class MyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     public static DB database = new DB();
-	public static UserApplication ua;
+	public static UserApplication ua=new UserApplication(database);
 	HashMap<String,HashMap<Long, TweetInfo>> wholeList = new HashMap<String,HashMap<Long, TweetInfo>>();
 	ArrayList<String> filterList;
 	ArrayList<Integer> numberInFilterList = new ArrayList<Integer>();
@@ -39,7 +39,7 @@ public class MyServlet extends HttpServlet {
         super();
         try {
 			database.connect();
-			ua = new UserApplication(database);
+			//ua = new UserApplication(database);
 			//new WorkPool().start();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

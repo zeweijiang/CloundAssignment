@@ -12,6 +12,8 @@
 	</script>
 	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization"></script>
 	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0/src/markerclusterer.js"></script>
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart'],'language':'ru'}]}"></script>
 	<title>Home</title>
 </head>
 <body onload="GetMap()">
@@ -34,25 +36,57 @@
     var currentState=0;
     var stop=<%=new String("stop").hashCode()%>;
     var readpoint=[];
+    var map3;
 	var map2;
 	var map;
 	var heatmap;
-	var pointarray;
+	var positiveMap;
+	var negativeMap;
+	var pointArray;
+	var pointArray2;
+	var pointArray3;
 	var taxiData=[];
+	var taxiData2=[];
+	var taxiData3=[];
 	var marker=[];
 	var infowindow=[];
 	var mc;
 	var overall=0.0;
 	var totalsenti=0.0;
+	var drawChartCount=0;
+	var drawChartRate=10;//Repaint when received 10 new data
+	var lineChartData = [['Sentiment Range', 'Count'],
+			          	 ['[-1.0, -0.8)',  0],
+			             ['[-0.8, -0.6)',  0],
+			             ['[-0.6, -0.4)',  0],
+			             ['[-0.4, -0.2)',  0],
+			             ['[-0.2, -0)',  0],
+			             ['[0, 0.2)',  0],
+			             ['[0.2, 0.4)',  0],
+			             ['[0.4, 0.6)',  0],
+			             ['[0.6, 0.8)',  0],
+			             ['[0.8, 1]',  0]
+			            ];
+	function changeGradient() {
+		  var gradient = [
+		    'rgba(255, 0, 0, 0)',
+		    'rgba(255, 0, 0, 1)',
+		    'rgba(255, 0, 0, 2)',
+		    'rgba(255, 0, 0, 3)'
+		  ]
+		  positiveMap.set('gradient', heatmap.get('gradient') ? null : gradient);
+		  var gradient2 = [
+			'rgba(0, 0, 255, 0)',
+			'rgba(0, 0, 255, 1)',
+			'rgba(0, 0, 255, 2)',
+			'rgba(0, 0, 255, 3)'
+		      		  ]
+		      		  negativeMap.set('gradient', heatmap.get('gradient') ? null : gradient2);
+		}
 	function initialPoints(){
-		pointArray = new google.maps.MVCArray(taxiData);
-		heatmap = new google.maps.visualization.HeatmapLayer({
-		    data: pointArray
-		  });
 		var mcOptions = {gridSize: 50, maxZoom: 15};
 		//var mc = new MarkerClusterer(map);
 		mc = new MarkerClusterer(map,marker,mcOptions);
-		heatmap.setMap(map2);
 	}
 	function clearMarker() {
 		for (var i = 0; i < markers.length; i++) {
@@ -63,6 +97,9 @@
 	function GetMap(){
 		mainMap();
 		heatMap();
+		sentimentMap();
+		changeGradient();
+		drawChart();
 		initialPoints();
 		openSocket();
 		//clearMarker();
@@ -86,8 +123,43 @@
 		};
 		var container = document.getElementById("mapContainer2");
 		map2 = new google.maps.Map(container,myOptions);
+		pointArray = new google.maps.MVCArray(taxiData);
+		heatmap = new google.maps.visualization.HeatmapLayer({
+		    data: pointArray
+		  });
+		heatmap.setMap(map2);
+	}
+	function sentimentMap(){
+		var latlng= new google.maps.LatLng(0,0);
+		var myOptions={
+				zoom: 1,
+				center: latlng,
+				mapTypeId: google.maps.MapTypeId.SATELLITE
+		};
+		var container = document.getElementById("mapContainer3");
+		map3 = new google.maps.Map(container,myOptions);
+		pointArray2 = new google.maps.MVCArray(taxiData2);
+		positiveMap = new google.maps.visualization.HeatmapLayer({
+		    data: pointArray2
+		  });
+		positiveMap.setMap(map3);
+		pointArray3 = new google.maps.MVCArray(taxiData3);
+		negativeMap = new google.maps.visualization.HeatmapLayer({
+		    data: pointArray3
+		  });
+		negativeMap.setMap(map3);
 	}
 	
+	function drawChart() {
+        var data = google.visualization.arrayToDataTable(lineChartData);
+        var options = {
+          title: 'Sentiment Count V.S. Sentiment Score'
+        };
+
+        var lineChart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+        lineChart.draw(data, options);
+      }
 	
 	   function openSocket(){
 	        // Ensures only one connection is open at a time
@@ -140,8 +212,39 @@
 					  google.maps.event.addListener(tmpb, 'click', function() {
 						  tmpc.open(map, tmpb);
 					  });
+					var number=0;
+					if(event.data>0){
+						number=Math.ceil((event.data+1)*5);
+						for(var i=0;i<number;i++){
+							var lat = (parseFloat(readpoint[1])+parseFloat(Math.random()/100));
+							var lon = (parseFloat(readpoint[2])+parseFloat(Math.random()/100));
+							writeResponse(lat);
+							pointArray2.push(new google.maps.LatLng(lat,lon));	
+						}
+					}
+					if(event.data<0){
+						number=Math.ceil((-event.data+1)*5);
+						for(var i=0;i<number;i++){
+							var lat = (parseFloat(readpoint[1])+parseFloat(Math.random()/100));
+							var lon = (parseFloat(readpoint[2])+parseFloat(Math.random()/100));
+							pointArray3.push(new google.maps.LatLng(lat,lon));	
+						}
+					}
 					pointArray.push(new google.maps.LatLng(readpoint[1],readpoint[2]));
 	            	
+					if(readpoint[4]>=-1 && readpoint[4]<-0.8) lineChartData[1][1]++;
+					else if(readpoint[4]>=-0.8 && readpoint[4]<-0.6) lineChartData[2][1]++;
+					else if(readpoint[4]>=-0.6 && readpoint[4]<-0.4) lineChartData[3][1]++;
+					else if(readpoint[4]>=-0.4 && readpoint[4]<-0.2) lineChartData[4][1]++;
+					else if(readpoint[4]>=-0.2 && readpoint[4]<0) lineChartData[5][1]++;
+					else if(readpoint[4]>=0 && readpoint[4]<0.2) lineChartData[6][1]++;
+					else if(readpoint[4]>=0.2 && readpoint[4]<0.4) lineChartData[7][1]++;
+					else if(readpoint[4]>=0.4 && readpoint[4]<0.6) lineChartData[8][1]++;
+					else if(readpoint[4]>=0.6 && readpoint[4]<0.8) lineChartData[9][1]++;
+					else lineChartData[10][1]++;
+					if(drawChartCount%drawChartRate == 0) drawChart();
+					drawChartCount++;
+					
 	            	/*var pointArray = new google.maps.MVCArray(tmpa);
 	        		heatmap = new google.maps.visualization.HeatmapLayer({
 	        		    data: pointArray
@@ -208,6 +311,7 @@
 			mainMap();
 			//heatMap();
 			pointArray.clear();
+			pointArray2.clear();
 			var mcOptions = {gridSize: 50, maxZoom: 15};
 			mc = new MarkerClusterer(map,marker,mcOptions);
 			var text = document.getElementById("filter").value;
@@ -225,7 +329,7 @@
 		}
 	
 </script>
-<% 
+<%
 	ArrayList<String> filterList=(ArrayList<String>)request.getAttribute("filterList");
 %>
 <table>
@@ -240,11 +344,11 @@ Key Words<br>
 <script type="text/javascript">document.getElementById("stopSubmit").disabled=true;</script>
 Filter Selection<form action="MyServlet" method="get">
 <select id="filter" name="filter">
-	<% 
+	<%
 		for(int i=0;i<filterList.size();i++){
 	%>
-	<option value="<%=filterList.get(i)%>" <% if(filterList.get(i).equals(filterKey)){%>selected="selected"<%}%>><%=filterList.get(i)%></option>
-	<% 
+	<option value="<%=filterList.get(i)%>"<%if(filterList.get(i).equals(filterKey)){%>selected="selected"<%}%>><%=filterList.get(i)%></option>
+	<%
 		}
 	%>
 </select>
@@ -260,8 +364,13 @@ Filter Selection<form action="MyServlet" method="get">
 <div id="mapContainer2" style="width:500px;height:500px">
 </div>
 </td>
+</td>
+<td valign="top">
+<div id="mapContainer3" style="width:500px;height:500px">
+</div>
+</td>
 </tr>
 </table>
-
+<div id="chart_div" style="width:900px;height:500px"></div>
 </body>
 </html>

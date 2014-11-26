@@ -25,7 +25,7 @@ public class FetchSentiment {
 			String senti = (String) messageAttribute.getJSONObject("senti").getString("Value");
 			//System.out.println(text);
 			//MyServlet.database.fetchPosition(id, "dsds", text, lat, lon, time, senti);
-			if(senti.equals("error")){
+			if("error".equals(senti)){
 				senti="0";
 			}
 			ArrayList<String> keys = MyServlet.ua.getKey(text);
@@ -33,6 +33,7 @@ public class FetchSentiment {
 				MyServlet.database.fetchPosition(id, key, text, lat, lon, time, senti);
 				//System.out.println("get one");
 			}
+			
 		}
 	}
 	public static String getPostData(HttpServletRequest req) {
