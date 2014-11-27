@@ -98,7 +98,7 @@ public class EchoServer {
     	if(r!=null){
     		r.end();
     	}
-    	//System.out.println(message);
+    	//System.out.println("zhangluoma");
     	r = new Reply(session, message);
     	r.start();
         //System.out.println("Message from " + session.getId() + ": " + message);

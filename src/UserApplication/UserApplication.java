@@ -20,7 +20,6 @@ public class UserApplication {
 	TwitterStream twitterStream;
 	public HashSet<String> stream = new HashSet<String>();
 	ArrayList<String> keys = new ArrayList<String>();
-	int count=0;
 	AmazonSQSClient sqs =new AmazonSQSClient(new ProfileCredentialsProvider("jiangzewei")
 	.getCredentials());
 	String myQueueUrl="https://sqs.us-east-1.amazonaws.com/668249848517/Cloud";
@@ -156,7 +155,7 @@ public class UserApplication {
 					//currentTimeStamp=arg0.getCreatedAt().toString();
 					//System.out.println("text="+arg0.getText());
 					JSONObject jo = new JSONObject();
-					System.out.println(count++);
+					//System.out.println(count++);
 					try {
 						jo.put("id", String.valueOf(arg0.getId()));
 						jo.put("text", arg0.getText());

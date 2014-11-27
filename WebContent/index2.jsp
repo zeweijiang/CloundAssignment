@@ -17,14 +17,14 @@
 	<title>Home</title>
 </head>
 <body onload="GetMap()">
-<!--  <div>
+<div>
     <input type="text" id="messageinput"/>
 </div>
 <div>
     <button type="button" onclick="openSocket();" >Open</button>
     <button type="button" onclick="send();" >Send</button>
     <button type="button" onclick="closeSocket();" >Close</button>
-</div> -->
+</div>
 <!-- Server responses get written here -->
 <div id="messages"></div>
 <div id="senti"></div>
@@ -168,7 +168,7 @@
 	            return;
 	        }
 	        // Create a new instance of the websocket
-	        webSocket = new WebSocket("ws://localhost:8080/CloudTwitterMap/echo");
+	        webSocket = new WebSocket("ws://spring-env.elasticbeanstalk.com:8080/echo");
 	        /**
 	         * Binds functions to the listeners for the websocket.
 	         */
@@ -177,12 +177,15 @@
 	            // and the first time event.data is undefined.
 	            // Leave a comment if you know the answer.
 	            if(event.data === undefined)
+	            {	
+	            	//webSocket.send("rome!!!!!!");//debug
 	                return;
+	            }
 	            writeResponse(event.data);
 	        };
 
 	        webSocket.onmessage = function(event){
-	            //writeResponse(event.data);
+	            //writeResponse(event.data);//debug
 	            if(currentState==0){
 	            	currentState=1;
 	            	readpoint[0]=event.data;
@@ -371,6 +374,6 @@ Filter Selection<form action="MyServlet" method="get">
 </td>
 </tr>
 </table>
-<div id="chart_div" style="width:900px;height:500px"></div>
+<div id="chart_div" style="width:1200px;height:500px"></div>
 </body>
 </html>
